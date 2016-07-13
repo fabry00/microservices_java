@@ -13,3 +13,35 @@ nbproject/private/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/webapp/dist
+/webapp/tmp
+
+# dependencies
+/webapp/node_modules
+/webapp/bower_components
+
+# IDEs and editors
+/webapp/.idea
+
+# misc
+/webapp/.sass-cache
+/webapp/connect.lock
+/webapp/coverage/*
+/webapp/libpeerconnection.log
+npm-debug.log
+testem.log
+/webapp/typings
+
+# e2e
+/webapp/e2e/*.js
+/webapp/e2e/*.map
+
+#System Files
+.DS_Store
+/nbproject/private/
