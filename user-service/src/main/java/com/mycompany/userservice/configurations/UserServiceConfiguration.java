@@ -1,13 +1,14 @@
-package com.mycompany.tasklistservice.configurations;
+package com.mycompany.userservice.configurations;
 
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TaskListServiceConfiguration extends Configuration implements IConfigurator {
+public class UserServiceConfiguration extends Configuration implements IConfigurator {
 
     private int maxLength;
     private String serviceName;
     private String serviceDesc;
+    private String template;
     
     @JsonProperty
     public int getMaxLength() {
@@ -32,6 +33,16 @@ public class TaskListServiceConfiguration extends Configuration implements IConf
     @JsonProperty
     public String getServiceDesc() {
         return serviceDesc;
+    }
+    
+    @JsonProperty
+    public String getTemplate() {
+        return this.template;
+    }
+    
+    @JsonProperty
+    public void setTemplate(String template) {
+        this.template = template;
     }
 
     @JsonProperty

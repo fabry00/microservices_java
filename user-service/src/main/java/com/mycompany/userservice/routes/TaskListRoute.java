@@ -1,6 +1,6 @@
-package com.mycompany.tasklistservice.routes;
+package com.mycompany.userservice.routes;
 
-import com.mycompany.tasklistservice.resources.Task;
+import com.mycompany.userservice.resources.Task;
 import com.google.common.base.Optional;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.io.CharStreams;
@@ -36,11 +36,14 @@ public class TaskListRoute {
 
     @GET
     @Timed
+    // /taks-list
+    // /taks-list?contains=string
     public List<Task> listTasks(@QueryParam("contains") Optional<String> contains) {
         List<Task> tasks = new ArrayList<Task>();
-
+        
         String query = contains.or("");
-
+        log.info("Query: "+query);
+        
         try {
             //Get processes from the terminal
             Process p = Runtime.getRuntime().exec("ps -e");
