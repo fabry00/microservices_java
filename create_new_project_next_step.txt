@@ -1,3 +1,9 @@
+TO SOLVE NETBEANS PROBLEMS:
+<configuration>
+      <shadedArtifactAttached>true</shadedArtifactAttached>
+      <shadedClassifierName>launcher</shadedClassifierName> <!-- Can be any name that makes sense -->
+    </configuration>
+
 MODIFY dependencyManagement adding what you need (test for exampe)
 <dependencies>
         <dependency>
@@ -11,3 +17,4 @@ MODIFY dependencyManagement adding what you need (test for exampe)
             <scope>test</scope>
         </dependency>        
 </dependencies>
+
