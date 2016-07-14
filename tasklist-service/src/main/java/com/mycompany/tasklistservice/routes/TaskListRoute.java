@@ -1,5 +1,6 @@
-package com.mycompany.tasklistservice;
+package com.mycompany.tasklistservice.routes;
 
+import com.mycompany.tasklistservice.resources.Task;
 import com.google.common.base.Optional;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.io.CharStreams;
@@ -22,24 +23,27 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Path("/task-list")
 @Produces(MediaType.APPLICATION_JSON)
-public class TaskListResource {
+public class TaskListRoute {
     private final int maxLength;
     private final AtomicLong counter;
     //SLF4J is provided with dropwizard
-    Logger log = LoggerFactory.getLogger(TaskListResource.class);
+    Logger log = LoggerFactory.getLogger(TaskListRoute.class);
 
-    public TaskListResource(int maxLength) {
+    public TaskListRoute(int maxLength) {
         this.maxLength = maxLength;
         this.counter = new AtomicLong();
     }
 
     @GET
     @Timed
+    // /taks-list
+    // /taks-list?contains=string
     public List<Task> listTasks(@QueryParam("contains") Optional<String> contains) {
         List<Task> tasks = new ArrayList<Task>();
-
+        
         String query = contains.or("");
-
+        log.info("Query: "+query);
+        
         try {
             //Get processes from the terminal
             Process p = Runtime.getRuntime().exec("ps -e");
@@ -53,7 +57,10 @@ public class TaskListResource {
                 //filter the processes depending on the ?contains= from the url
                 if(line.contains(query)) {
                     //trim the processes according to the maxLength
-                    tasks.add(new Task(counter.getAndIncrement(), line.substring(0, Math.min(line.length(), maxLength))));
+                    Task task = new Task.Builder()
+                                        .withId(counter.getAndIncrement())
+                                        .withContent(line.substring(0, Math.min(line.length(), maxLength))).build();
+                    tasks.add(task);
                 }
             }
             input.close();
