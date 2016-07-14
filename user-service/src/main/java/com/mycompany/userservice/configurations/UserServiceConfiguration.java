@@ -5,20 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserServiceConfiguration extends Configuration implements IConfigurator {
 
-    private int maxLength;
     private String serviceName;
     private String serviceDesc;
     private String template;
-    
-    @JsonProperty
-    public int getMaxLength() {
-        return maxLength;
-    }
-
-    @JsonProperty
-    public void setMaxLength(int maxLength) {
-        this.maxLength = maxLength;
-    }
     
     @JsonProperty
     public String getServiceName() {

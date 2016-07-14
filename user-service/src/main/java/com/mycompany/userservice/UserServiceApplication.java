@@ -3,7 +3,6 @@ package com.mycompany.userservice;
 import com.mycompany.userservice.configurations.IConfigurator;
 import com.mycompany.userservice.configurations.UserServiceConfiguration;
 import com.mycompany.userservice.health.HealthCheckTask;
-import com.mycompany.userservice.routes.TaskListRoute;
 import com.mycompany.userservice.routes.DefaultRoute;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -29,13 +28,11 @@ public class UserServiceApplication extends Application<UserServiceConfiguration
                     Environment environment) {
         // register resource now
         IConfigurator myConfigs = (IConfigurator) configuration;
-        final TaskListRoute resource = new TaskListRoute(myConfigs.getMaxLength());
         final DefaultRoute defaultRoute = new DefaultRoute(myConfigs);
 
-        final HealthCheckTask healthCheck = new HealthCheckTask(resource,myConfigs.getTemplate());
+        final HealthCheckTask healthCheck = new HealthCheckTask(myConfigs.getTemplate());
       
         environment.healthChecks().register("template", healthCheck);
-        environment.jersey().register(resource);
         environment.jersey().register(defaultRoute);
     }
 
