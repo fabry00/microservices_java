@@ -1,19 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
- @fabry00
- Watch 415
-  Star 4,604
-  Fork 2,037 dropwizard/dropwizard
- Code  Issues 57  Pull requests 14  Wiki  Pulse  Graphs
-Branch: master Find file Copy pathdropwizard/dropwizard-example/pom.xml
-945e07e  6 days ago
-@joschi joschi [maven-release-plugin] prepare for next development iteration
-11 contributors @codahale @carlo-rtr @joschi @nicktelford @arteam @tjcutajar @nickbabcock @reines @KingBuzzer @wolfeidau @adamjordens
-RawBlameHistory     280 lines (271 sloc)  10.9 KB
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
