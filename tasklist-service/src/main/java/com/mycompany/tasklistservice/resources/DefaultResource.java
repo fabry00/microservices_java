@@ -1,4 +1,4 @@
-package com.mycompany.tasklistservice.routes;
+package com.mycompany.tasklistservice.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.mycompany.tasklistservice.configurations.IConfigurator;
@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class DefaultRoute {
+public class DefaultResource {
     
     private final IConfigurator configurator;
-    Logger log = LoggerFactory.getLogger(DefaultRoute.class);
+    Logger log = LoggerFactory.getLogger(DefaultResource.class);
     
-    public DefaultRoute(IConfigurator configurator) {
+    public DefaultResource(IConfigurator configurator) {
         this.configurator = configurator;
     }
     

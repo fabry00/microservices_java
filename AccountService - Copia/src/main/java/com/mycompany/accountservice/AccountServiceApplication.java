@@ -1,6 +1,6 @@
 package com.mycompany.accountservice;
 
-import com.mycompany.accountservice.resources.DefaultResource;
+import com.mycompany.accountservice.resources.HelloResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -24,7 +24,7 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
     @Override
     public void run(final AccountServiceConfiguration configuration,
                     final Environment environment) {
-         environment.jersey().register(new DefaultResource());
+         environment.jersey().register(new HelloResource());
          
     }
 

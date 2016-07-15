@@ -43,8 +43,13 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-client</artifactId>
+                <version>1.0.0-rc4</version>
         </dependency>
-        
+        <dependency>
+		<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-client</artifactId>
+		<version>1.19.1</version>
+        </dependency>
        <!-- <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-auth</artifactId>
@@ -86,7 +91,7 @@
             <artifactId>dropwizard-testing</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.glassfish.jersey.test-framework.providers</groupId>
             <artifactId>jersey-test-framework-provider-inmemory</artifactId>
             <scope>test</scope>
@@ -115,7 +120,7 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

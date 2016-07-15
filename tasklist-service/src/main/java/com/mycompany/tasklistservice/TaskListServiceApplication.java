@@ -3,8 +3,8 @@ package com.mycompany.tasklistservice;
 import com.mycompany.tasklistservice.configurations.IConfigurator;
 import com.mycompany.tasklistservice.configurations.TaskListServiceConfiguration;
 import com.mycompany.tasklistservice.health.HealthCheckTask;
-import com.mycompany.tasklistservice.routes.TaskListRoute;
-import com.mycompany.tasklistservice.routes.DefaultRoute;
+import com.mycompany.tasklistservice.resources.TaskListResource;
+import com.mycompany.tasklistservice.resources.DefaultResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -29,8 +29,8 @@ public class TaskListServiceApplication extends Application<TaskListServiceConfi
                     Environment environment) {
         // register resource now
         IConfigurator myConfigs = (IConfigurator) configuration;
-        final TaskListRoute resource = new TaskListRoute(myConfigs.getMaxLength());
-        final DefaultRoute defaultRoute = new DefaultRoute(myConfigs);
+        final TaskListResource resource = new TaskListResource(myConfigs.getMaxLength());
+        final DefaultResource defaultRoute = new DefaultResource(myConfigs);
 
         final HealthCheckTask healthCheck = new HealthCheckTask(resource,myConfigs.getTemplate());
       

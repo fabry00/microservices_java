@@ -3,8 +3,8 @@ import com.codahale.metrics.health.HealthCheck;
 import com.google.common.base.Optional;
 import com.mycompany.tasklistservice.resources.ServiceInfo;
 import com.mycompany.tasklistservice.resources.Task;
-import com.mycompany.tasklistservice.routes.DefaultRoute;
-import com.mycompany.tasklistservice.routes.TaskListRoute;
+import com.mycompany.tasklistservice.resources.DefaultResource;
+import com.mycompany.tasklistservice.resources.TaskListResource;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 public class HealthCheckTask extends HealthCheck {
     private final Logger log = LoggerFactory.getLogger(HealthCheckTask.class);
     private final String template;
-    private final TaskListRoute taskRoute;
+    private final TaskListResource taskRoute;
 
-    public HealthCheckTask(TaskListRoute taskRoute,String template) {
+    public HealthCheckTask(TaskListResource taskRoute,String template) {
         this.template = template;
         this.taskRoute = taskRoute;
     }

@@ -1,4 +1,4 @@
-package com.mycompany.tasklistservice.routes;
+package com.mycompany.tasklistservice.resources;
 
 import com.mycompany.tasklistservice.resources.Task;
 import com.google.common.base.Optional;
@@ -23,13 +23,13 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Path("/task-list")
 @Produces(MediaType.APPLICATION_JSON)
-public class TaskListRoute {
+public class TaskListResource {
     private final int maxLength;
     private final AtomicLong counter;
     //SLF4J is provided with dropwizard
-    Logger log = LoggerFactory.getLogger(TaskListRoute.class);
+    Logger log = LoggerFactory.getLogger(TaskListResource.class);
 
-    public TaskListRoute(int maxLength) {
+    public TaskListResource(int maxLength) {
         this.maxLength = maxLength;
         this.counter = new AtomicLong();
     }
