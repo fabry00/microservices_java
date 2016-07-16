@@ -27,6 +27,14 @@ public abstract class BaseServiceAPI implements IAPI{
         this.uri = uri;
     }   
     
+    public URI getUri() {
+        return uri;
+    }
+    
+    public HttpClient getClient() {
+        return httpClient;
+    }
+    
     public IServiceInfo getServiceInfo() throws SystemUnreachable {        
         try {
             HttpGet request = new HttpGet(this.uri);

@@ -1,16 +1,29 @@
 package com.mycompany.accountservice;
 
 import com.mycompany.accountservice.api.AccountServiceAPI;
+import com.mycompany.accountservice.api.MyUser;
+import com.mycompany.accountservice.resources.SecuredResource;
 import com.mycompany.commons.api.IAPI;
 import com.mycompany.commons.health.HealthCheckTask;
 import com.mycompany.commons.resource.DefaultResource;
 import com.mycompany.commons.resource.IDefaultResource;
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.jetty.server.Connector;
+
+import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
+import com.mycompany.accountservice.auth.MyAuthenticator;
+
+import java.security.Principal;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 public class AccountServiceApplication extends Application<AccountServiceConfiguration> {
 
@@ -30,14 +43,32 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
 
     @Override
     public void run(final AccountServiceConfiguration configuration,
-            final Environment environment) throws URISyntaxException {
+            final Environment environment) throws URISyntaxException, UnsupportedEncodingException {
 
         environment.healthChecks().register(AccountServiceConfiguration.SERVICE_NAME,
-                getHealthCheck(configuration,environment));
-        
-        
+                getHealthCheck(configuration, environment));
+
         environment.jersey().register(getDefault());
 
+        environment.jersey().register(getAuthenticator(configuration.getJwtTokenSecret()));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
+        environment.jersey().register(new SecuredResource(configuration.getJwtTokenSecret()));
+    }
+    
+    private AuthDynamicFeature getAuthenticator( byte[] tokenSecret){
+        final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
+        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(tokenSecret);        
+        AuthDynamicFeature auth = new AuthDynamicFeature(
+                new JWTAuthFilter.Builder<MyUser>()
+                .setTokenParser(tokenParser)
+                .setTokenVerifier(tokenVerifier)
+                .setRealm("realm")
+                .setPrefix("Bearer")
+                .setAuthenticator(new MyAuthenticator() {})
+                .buildAuthFilter());
+        
+        return auth;
     }
 
     private IDefaultResource getDefault() {
@@ -51,15 +82,16 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
 
     private HealthCheckTask getHealthCheck(final AccountServiceConfiguration configuration,
             final Environment environment) throws URISyntaxException {
-        
+
         /*URI uri = configuration.getServerFactory()
                 .build(environment)
                 .getURI();
-        */
+         */
         // FIXME --> get from config or discover it
         URI uri = new URI("http://localhost:9084");
         IAPI api = new AccountServiceAPI(uri);
         HealthCheckTask checker = new HealthCheckTask(api);
         return checker;
     }
+
 }
