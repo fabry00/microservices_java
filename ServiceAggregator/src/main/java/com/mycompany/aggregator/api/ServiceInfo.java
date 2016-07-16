@@ -1,7 +1,7 @@
-package com.mycompany.accountservice.api;
+package com.mycompany.aggregator.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mycompany.commons.resource.IServiceInfo;
+import com.mycompany.commons.api.IServiceInfo;
 import java.util.Objects;
 
 public class ServiceInfo implements IServiceInfo{

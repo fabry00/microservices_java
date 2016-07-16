@@ -1,7 +1,6 @@
-package com.mycompany.commons.resource;
+package com.mycompany.commons.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Objects;
 
 public interface IServiceInfo {
 

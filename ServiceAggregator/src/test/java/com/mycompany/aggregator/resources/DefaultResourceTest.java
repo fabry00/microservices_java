@@ -1,6 +1,6 @@
-package com.mycompany.accountservice.resources;
+package com.mycompany.aggregator.resources;
 
-import com.mycompany.accountservice.AccountServiceConfiguration;
+import com.mycompany.aggregator.ServiceAggregatorConfiguration;
 import com.mycompany.commons.api.IServiceInfo;
 import com.mycompany.commons.api.ServiceInfo;
 import com.mycompany.commons.resource.DefaultResource;
@@ -24,15 +24,15 @@ public class DefaultResourceTest {
     @Rule
     public ResourceTestRule resource = ResourceTestRule.builder()
             .addResource(new DefaultResource.Builder()
-                    .withName(AccountServiceConfiguration.SERVICE_NAME)
-                    .withDesc(AccountServiceConfiguration.SERVICE_DESC)
+                    .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
+                    .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
                     .build()).build();
 
     @Test
     public void testGetGreeting() {
         IServiceInfo expected = new ServiceInfo.Builder().
-                withName(AccountServiceConfiguration.SERVICE_NAME)
-                .withDesc(AccountServiceConfiguration.SERVICE_DESC)
+                withName(ServiceAggregatorConfiguration.SERVICE_NAME)
+                .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
                 .build();
         //Obtain client from @Rule.
         Client client = resource.client();

@@ -1,5 +1,7 @@
 package my.company.processservice;
 
+import com.mycompany.commons.resource.DefaultResource;
+import com.mycompany.commons.resource.IDefaultResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -23,7 +25,17 @@ public class ProcessServiceApplication extends Application<ProcessServiceConfigu
     @Override
     public void run(final ProcessServiceConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+       
+        environment.jersey().register(getDefault());
+
     }
 
+    private IDefaultResource getDefault() {
+        IDefaultResource defaultRes = new DefaultResource.Builder()
+                .withName(ProcessServiceConfiguration.SERVICE_NAME)
+                .withDesc(ProcessServiceConfiguration.SERVICE_DESC)
+                .build();
+
+        return defaultRes;
+    }
 }

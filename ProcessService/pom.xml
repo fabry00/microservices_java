@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.0.0-rc4</dropwizard.version>
+        <mycompany.version>1.0-SNAPSHOT</mycompany.version>
         <mainClass>my.company.processservice.ProcessServiceApplication</mainClass>
     </properties>
 
@@ -36,6 +37,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>Commons</artifactId>
+            <version>${mycompany.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>

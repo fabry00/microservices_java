@@ -1,6 +1,5 @@
-package com.mycompany.accountservice.resources;
+package my.company.processservice.resources;
 
-import com.mycompany.accountservice.AccountServiceConfiguration;
 import com.mycompany.commons.api.IServiceInfo;
 import com.mycompany.commons.api.ServiceInfo;
 import com.mycompany.commons.resource.DefaultResource;
@@ -13,6 +12,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Rule;
 import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
+import my.company.processservice.ProcessServiceConfiguration;
 
 /**
  *
@@ -24,15 +24,15 @@ public class DefaultResourceTest {
     @Rule
     public ResourceTestRule resource = ResourceTestRule.builder()
             .addResource(new DefaultResource.Builder()
-                    .withName(AccountServiceConfiguration.SERVICE_NAME)
-                    .withDesc(AccountServiceConfiguration.SERVICE_DESC)
+                    .withName(ProcessServiceConfiguration.SERVICE_NAME)
+                    .withDesc(ProcessServiceConfiguration.SERVICE_DESC)
                     .build()).build();
 
     @Test
     public void testGetGreeting() {
         IServiceInfo expected = new ServiceInfo.Builder().
-                withName(AccountServiceConfiguration.SERVICE_NAME)
-                .withDesc(AccountServiceConfiguration.SERVICE_DESC)
+                withName(ProcessServiceConfiguration.SERVICE_NAME)
+                .withDesc(ProcessServiceConfiguration.SERVICE_DESC)
                 .build();
         //Obtain client from @Rule.
         Client client = resource.client();

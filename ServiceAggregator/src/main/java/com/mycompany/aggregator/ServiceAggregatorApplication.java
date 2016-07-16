@@ -1,7 +1,8 @@
 package com.mycompany.aggregator;
 
-import com.mycompany.accountservice.api.ServiceInfo;
-import com.mycompany.aggregator.cli.AccountServiceClient;
+
+import com.mycompany.commons.resource.DefaultResource;
+import com.mycompany.commons.resource.IDefaultResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -26,10 +27,20 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     public void run(final ServiceAggregatorConfiguration configuration,
                     final Environment environment) {
         
+        environment.jersey().register(getDefault());
         
         /*AccountServiceClient client = new AccountServiceClient("localhost",9080);
         ServiceInfo resp = client.getServiceInfo();
         System.out.println("########### "+resp);*/
+    }
+    
+    private IDefaultResource getDefault() {
+        IDefaultResource defaultRes = new DefaultResource.Builder()
+                .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
+                .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
+                .build();
+
+        return defaultRes;
     }
 
 }
