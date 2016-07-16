@@ -14,8 +14,14 @@ public class AccountServiceConfiguration extends Configuration {
     
     @NotEmpty
     private final String jwtTokenSecret = "bfsdgs5ty756h4w5g5bg6w_56-45w7.3";
+    @NotEmpty
+    private final int tokenExpirationMin = 60;
 
     public byte[] getJwtTokenSecret() throws UnsupportedEncodingException {
         return jwtTokenSecret.getBytes("UTF-8");
+    }
+    
+    public int getTokenExpiration() {
+        return this.tokenExpirationMin;
     }
 }

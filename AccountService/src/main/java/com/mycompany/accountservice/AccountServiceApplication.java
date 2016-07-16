@@ -53,21 +53,24 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
         environment.jersey().register(getAuthenticator(configuration.getJwtTokenSecret()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
-        environment.jersey().register(new SecuredResource(configuration.getJwtTokenSecret()));
+        environment.jersey().register(new SecuredResource(
+                configuration.getJwtTokenSecret(),
+                configuration.getTokenExpiration()));
     }
-    
-    private AuthDynamicFeature getAuthenticator( byte[] tokenSecret){
+
+    private AuthDynamicFeature getAuthenticator(byte[] tokenSecret) {
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
-        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(tokenSecret);        
+        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(tokenSecret);
         AuthDynamicFeature auth = new AuthDynamicFeature(
                 new JWTAuthFilter.Builder<MyUser>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
                 .setRealm("realm")
                 .setPrefix("Bearer")
-                .setAuthenticator(new MyAuthenticator() {})
+                .setAuthenticator(new MyAuthenticator() {
+                })
                 .buildAuthFilter());
-        
+
         return auth;
     }
 

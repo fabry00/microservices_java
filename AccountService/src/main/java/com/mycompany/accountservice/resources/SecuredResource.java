@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.security.Principal;
 import java.util.Map;
+import javax.ws.rs.PathParam;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
@@ -23,10 +24,13 @@ import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
 @Produces(APPLICATION_JSON)
 public class SecuredResource {
 
+    private final Integer expiration;
     private final byte[] tokenSecret;
 
-    public SecuredResource(byte[] tokenSecret) {
+    public SecuredResource(byte[] tokenSecret,
+            Integer expiration) {
         this.tokenSecret = tokenSecret;
+        this.expiration = expiration;
     }
 
     @GET
@@ -46,16 +50,19 @@ public class SecuredResource {
                     .withToken(jws.getCompactSerialization())
                     .withStatus(Token.Status.VALID)
                     .build();
+        } catch (JoseException e) {
+            throw Throwables.propagate(e);
         }
-        catch (JoseException e) { throw Throwables.propagate(e); }
     }
 
     @GET
     @Path("/generate-valid-token")
-    public Token generateValidToken() {
+    public Token generateValidToken(@PathParam("username") String username,
+            @PathParam("passwrod") String password) {
+
         final JwtClaims claims = new JwtClaims();
-        claims.setSubject("good-guy");
-        claims.setExpirationTimeMinutesInTheFuture(30);
+        claims.setSubject(username);
+        claims.setExpirationTimeMinutesInTheFuture(this.expiration);
 
         final JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
@@ -63,13 +70,14 @@ public class SecuredResource {
         jws.setKey(new HmacKey(tokenSecret));
 
         try {
-            
+
             return new Token.Builder()
                     .withToken(jws.getCompactSerialization())
                     .withStatus(Token.Status.VALID)
                     .build();
+        } catch (JoseException e) {
+            throw Throwables.propagate(e);
         }
-        catch (JoseException e) { throw Throwables.propagate(e); }
     }
 
     @GET
