@@ -6,5 +6,6 @@ import org.hibernate.validator.constraints.*;
 import javax.validation.constraints.*;
 
 public class ServiceAggregatorConfiguration extends Configuration {
-    // TODO: implement service configuration
+    public static final String SERVICE_NAME = "ServiceAggregator";
+    public static final String SERVICE_DESC = "Service aggregator";
 }

@@ -14,7 +14,7 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
     @Override
     public String getName() {
-        return "ServiceAggregator";
+        return ServiceAggregatorConfiguration.SERVICE_NAME;
     }
 
     @Override
@@ -25,11 +25,11 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     @Override
     public void run(final ServiceAggregatorConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
         
-       AccountServiceClient client = new AccountServiceClient("localhost",9080);
+        
+        /*AccountServiceClient client = new AccountServiceClient("localhost",9080);
         ServiceInfo resp = client.getServiceInfo();
-        System.out.println("########### "+resp);
+        System.out.println("########### "+resp);*/
     }
 
 }

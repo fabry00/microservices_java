@@ -1,9 +1,10 @@
 package com.mycompany.accountservice.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mycompany.commons.resource.IServiceInfo;
 import java.util.Objects;
 
-public class ServiceInfo {
+public class ServiceInfo implements IServiceInfo{
 
     private String name;
     private String description;
@@ -12,19 +13,23 @@ public class ServiceInfo {
     }
 
     @JsonProperty
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
     @JsonProperty
+    @Override
     public String getDescription() {
         return this.description;
     }
 
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
