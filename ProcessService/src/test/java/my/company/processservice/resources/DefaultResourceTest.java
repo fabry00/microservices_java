@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import org.junit.Rule;
 import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
-import my.company.processservice.ProcessServiceConfiguration;
+import com.mycompany.processservice.ProcessServiceConfiguration;
 
 /**
  *

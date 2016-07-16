@@ -1,12 +1,11 @@
-package com.mycompany.aggregator.cli;
+package com.mycompany.commons.api;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mycompany.aggregator.api.ServiceInfo;
-import com.mycompany.commons.api.IServiceInfo;
 import com.mycompany.commons.headers.Header;
 import io.dropwizard.client.HttpClientBuilder;
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
@@ -14,21 +13,23 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
-public class AccountServiceClient {
-    
+/**
+ *
+ * @author fabry
+ */
+public abstract class BaseServiceAPI implements IAPI{
     private final HttpClient httpClient;
-    private final String basePath;
-    public AccountServiceClient(String host, int port){
-        
+    private final URI uri;
+    
+    public BaseServiceAPI(URI uri){
         MetricRegistry metric = new MetricRegistry();
         httpClient = new HttpClientBuilder(metric).build(getClass().getName());
-        basePath = "http://"+host+":"+port+"/";
+        this.uri = uri;
     }   
-    
     
     public IServiceInfo getServiceInfo() {        
         try {
-            HttpGet request = new HttpGet(this.basePath);
+            HttpGet request = new HttpGet(this.uri);
             request.setHeader(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
             HttpResponse response = httpClient.execute(request);
             ObjectMapper mapper = new ObjectMapper();
@@ -36,10 +37,9 @@ public class AccountServiceClient {
                                                     ServiceInfo.class);
             return myObject;
         } catch (IOException ex) {
-            Logger.getLogger(AccountServiceClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BaseServiceAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return null;
     }
-            
 }

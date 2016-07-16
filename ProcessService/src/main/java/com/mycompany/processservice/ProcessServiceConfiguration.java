@@ -1,4 +1,4 @@
-package my.company.processservice;
+package com.mycompany.processservice;
 
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;

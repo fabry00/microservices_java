@@ -50,6 +50,11 @@
             <version>${mycompany.version}</version>
         </dependency> 
         <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>ProcessService</artifactId>
+            <version>${mycompany.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
         </dependency>

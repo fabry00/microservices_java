@@ -8,8 +8,8 @@
     <prerequisites>
         <maven>3.0.0</maven>
     </prerequisites>
-
-    <groupId>my.company</groupId>
+             
+    <groupId>com.mycompany</groupId>
     <artifactId>ProcessService</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>1.0.0-rc4</dropwizard.version>
         <mycompany.version>1.0-SNAPSHOT</mycompany.version>
-        <mainClass>my.company.processservice.ProcessServiceApplication</mainClass>
+        <mainClass>com.mycompany.processservice.ProcessServiceApplication</mainClass>
     </properties>
 
     <dependencyManagement>
@@ -46,6 +46,7 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
