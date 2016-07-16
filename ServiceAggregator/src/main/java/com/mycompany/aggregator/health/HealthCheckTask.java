@@ -2,17 +2,17 @@ package com.mycompany.aggregator.health;
 import com.codahale.metrics.health.HealthCheck;
 import com.mycompany.commons.api.IAPI;
 import com.mycompany.commons.api.IServiceInfo;
-import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class HealthCheckTask extends HealthCheck {
     private final Logger log = LoggerFactory.getLogger(HealthCheckTask.class);
-    private final List<IAPI> apis;
+    private final Set<IAPI> apis;
     
 
-    public HealthCheckTask(List<IAPI> apis) {
+    public HealthCheckTask(Set<IAPI> apis) {
         this.apis = apis;
 
     }

@@ -2,6 +2,7 @@ package com.mycompany.commons.health;
 import com.codahale.metrics.health.HealthCheck;
 import com.mycompany.commons.api.IAPI;
 import com.mycompany.commons.api.IServiceInfo;
+import com.mycompany.commons.api.SystemUnreachable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,19 +18,23 @@ public class HealthCheckTask extends HealthCheck {
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         this.log.info("checking");
+        try {
+            IServiceInfo resp = this.api.getServiceInfo();
+
+            if(resp.getName().isEmpty()) {
+                return Result.unhealthy("ServiceName is empty for: "
+                        +api.getClass().getName());
+            }
+            if(resp.getDescription().isEmpty()) {
+                return Result.unhealthy("ServiceDescription is empty for: "
+                        +api.getClass().getName());
+            }
+            return Result.healthy();
         
-        IServiceInfo resp = this.api.getServiceInfo();
-        
-        if(resp.getName().isEmpty()) {
-            return Result.unhealthy("ServiceName is empty for: "
-                    +api.getClass().getName());
+        }catch (SystemUnreachable ex) {
+             return Result.unhealthy(ex.getMessage());
         }
-        if(resp.getDescription().isEmpty()) {
-            return Result.unhealthy("ServiceDescription is empty for: "
-                    +api.getClass().getName());
-        }
-        return Result.healthy();
     }
 }

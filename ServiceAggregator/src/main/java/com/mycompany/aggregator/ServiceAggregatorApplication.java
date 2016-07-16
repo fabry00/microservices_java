@@ -1,8 +1,11 @@
 package com.mycompany.aggregator;
 
+import com.google.common.collect.ImmutableSet;
 import com.mycompany.processservice.api.ProcessServiceAPI;
 import com.mycompany.accountservice.api.AccountServiceAPI;
+import com.mycompany.aggregator.api.systemstatus.SubSystemStatusInfo;
 import com.mycompany.aggregator.health.HealthCheckTask;
+import com.mycompany.aggregator.resources.SystemStatusResource;
 import com.mycompany.commons.api.IAPI;
 import com.mycompany.commons.resource.DefaultResource;
 import com.mycompany.commons.resource.IDefaultResource;
@@ -13,9 +16,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ServiceAggregatorApplication extends Application<ServiceAggregatorConfiguration> {
 
+    private Set<IAPI> apis;
+    
     public static void main(final String[] args) throws Exception {
         new ServiceAggregatorApplication().run(args);
     }
@@ -34,10 +40,13 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     public void run(final ServiceAggregatorConfiguration configuration,
                     final Environment environment) throws URISyntaxException {
         
+        buildApis();
+                
         environment.healthChecks().register(ServiceAggregatorConfiguration.SERVICE_NAME,
-                                    getHealthCheck(configuration,environment));
+                                    getHealthCheck());
         
         environment.jersey().register(getDefault());
+        environment.jersey().register(getSystemStatus());
         
        /* AccountServiceAPI client = new AccountServiceAPI("localhost",9084);
         IServiceInfo resp = client.getServiceInfo();
@@ -57,24 +66,35 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     }
     
     
-    private HealthCheckTask getHealthCheck(final ServiceAggregatorConfiguration configuration,
-            final Environment environment) throws URISyntaxException {
-        
-        /*URI uri = configuration.getServerFactory()
-                .build(environment)
-                .getURI();
-        */
-        
-        List<IAPI> apis = new ArrayList<>();
-        // FIXME --> get from config or discover it
-        URI uri = new URI("http://localhost:9084");
-        apis.add(new AccountServiceAPI(uri));
-        
-        uri = new URI("http://localhost:9082");
-        apis.add(new ProcessServiceAPI(uri));
+    private SystemStatusResource getSystemStatus() {
+        SystemStatusResource systemStatus = new SystemStatusResource.Builder()
+                .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
+                .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
+                .withApis(apis)
+                .build();
+        return systemStatus;
+    }
+    
+    private HealthCheckTask getHealthCheck(){
         
         HealthCheckTask checker = new HealthCheckTask(apis);
         return checker;
+    }
+    
+    
+    private void buildApis() throws URISyntaxException {
+        
+        ImmutableSet.Builder<IAPI> builder
+                = new ImmutableSet.Builder<>();
+        
+        // FIXME retreive data from configurations
+        URI uri = new URI("http://localhost:9084");
+        builder.add(new AccountServiceAPI(uri));
+        
+        uri = new URI("http://localhost:9082");
+        builder.add(new ProcessServiceAPI(uri));
+        
+        apis = builder.build();
     }
 
 }

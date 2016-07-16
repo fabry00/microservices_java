@@ -1,5 +1,5 @@
 #!/bin/sh
-echo "" > "PIDs"
+
 PIDs=""
 
 ####AccountService
@@ -35,4 +35,5 @@ echo "*************************************************************"
 echo "*************************************************************"
 
 echo "All pids processes: $PIDs"
+echo "" > "PIDs"
 echo "$PIDs" >> "PIDs"

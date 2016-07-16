@@ -27,7 +27,7 @@ public abstract class BaseServiceAPI implements IAPI{
         this.uri = uri;
     }   
     
-    public IServiceInfo getServiceInfo() {        
+    public IServiceInfo getServiceInfo() throws SystemUnreachable {        
         try {
             HttpGet request = new HttpGet(this.uri);
             request.setHeader(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
@@ -40,6 +40,6 @@ public abstract class BaseServiceAPI implements IAPI{
             Logger.getLogger(BaseServiceAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return null;
+        throw new SystemUnreachable("unable to connect");
     }
 }
