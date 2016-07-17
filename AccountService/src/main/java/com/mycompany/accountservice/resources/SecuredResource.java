@@ -1,9 +1,16 @@
 package com.mycompany.accountservice.resources;
 
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
 import com.mycompany.accountservice.api.MyUser;
 import com.mycompany.accountservice.api.Token;
+import com.mycompany.accountservice.dao.IDAOFactory;
+import com.mycompany.accountservice.dao.IUserDAO;
+import com.mycompany.accountservice.dao.helper.DAOHelper;
+import com.mycompany.accountservice.resources.helpers.JwtHelper;
 import io.dropwizard.auth.Auth;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -14,75 +21,89 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.security.Principal;
-import java.util.Map;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
-
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.joda.time.DateTime;
 
 @Path("/jwt")
-@Produces(APPLICATION_JSON)
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 public class SecuredResource {
 
     private final Integer expiration;
+    private final IDAOFactory daoFactory;
     private final byte[] tokenSecret;
 
     public SecuredResource(byte[] tokenSecret,
-            Integer expiration) {
+            Integer expiration,
+            IDAOFactory daoFactory) {
         this.tokenSecret = tokenSecret;
         this.expiration = expiration;
+        this.daoFactory = daoFactory;
     }
 
     @GET
     @Path("/generate-expired-token")
-    public Token generateExpiredToken() {
-        final JwtClaims claims = new JwtClaims();
-        claims.setExpirationTimeMinutesInTheFuture(-20);
-        claims.setSubject("good-guy");
-
-        final JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(HMAC_SHA256);
-        jws.setKey(new HmacKey(tokenSecret));
-
-        try {
-            return new Token.Builder()
-                    .withToken(jws.getCompactSerialization())
-                    .withStatus(Token.Status.VALID)
-                    .build();
-        } catch (JoseException e) {
-            throw Throwables.propagate(e);
+    public Token generateExpiredToken(@PathParam("email") String email) {
+        if (null == email) {
+            throw new WebApplicationException("Credential params not found",
+                    Response.Status.NOT_FOUND);
         }
+
+        final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
+        final JsonWebToken token = JsonWebToken.builder()
+                .header(JsonWebTokenHeader.HS512())
+                .claim(JsonWebTokenClaim.builder()
+                        .subject(email)
+                        .issuedAt(new DateTime().plusHours(1))
+                        .build())
+                .build();
+
+        final String signedToken = signer.sign(token);
+
+        return new Token.Builder()
+                .withToken(signedToken)
+                .withStatus(Token.Status.VALID)
+                .build();
+
     }
 
     @GET
     @Path("/generate-valid-token")
-    public Token generateValidToken(@PathParam("username") String username,
-            @PathParam("passwrod") String password) {
+    public Token generateValidToken(@QueryParam("email") String email,
+            @QueryParam("password") String password) {
 
-        final JwtClaims claims = new JwtClaims();
-        claims.setSubject(username);
-        claims.setExpirationTimeMinutesInTheFuture(this.expiration);
-
-        final JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(HMAC_SHA256);
-        jws.setKey(new HmacKey(tokenSecret));
+        if (null == email) {
+            throw new WebApplicationException("Credential params not found",
+                    Response.Status.NOT_FOUND);
+        }
 
         try {
-
-            return new Token.Builder()
-                    .withToken(jws.getCompactSerialization())
-                    .withStatus(Token.Status.VALID)
-                    .build();
-        } catch (JoseException e) {
-            throw Throwables.propagate(e);
+            // Check right user and password
+            new DAOHelper().getUser(email, password, daoFactory);
+        } catch (DAOHelper.UserNotFound ex) {
+            throw new WebApplicationException("User unauthorized",
+                       Response.Status.UNAUTHORIZED);
         }
+        
+        JwtHelper helper = new JwtHelper();
+        helper.setSecret(tokenSecret);
+        return helper.getSignedToken(email, this.expiration);
+
     }
 
     @GET
     @Path("/check-token")
-    public Map<String, Object> get(@Auth Principal user) {
-        return ImmutableMap.<String, Object>of("username", user.getName(), "id", ((MyUser) user).getId());
+    public MyUser checkToken(@Auth Principal user) {
+        if (null == user) {
+            throw new WebApplicationException("Credential params not found",
+                    Response.Status.NOT_FOUND);
+        }
+        return new MyUser(((MyUser) user).getId(), user.getName());
     }
+
 }

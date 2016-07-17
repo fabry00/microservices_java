@@ -6,15 +6,19 @@ import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.mycompany.accountservice.api.MyUser;
 import java.math.BigDecimal;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author fabry
  */
 public class MyAuthenticator implements io.dropwizard.auth.Authenticator<JsonWebToken, MyUser> {
+    private final Logger log = LoggerFactory.getLogger(MyAuthenticator.class);
 
     @Override
     public Optional<MyUser> authenticate(JsonWebToken token) {
+        log.info("authenticate "+token);
         final JsonWebTokenValidator expiryValidator = new ExpiryValidator();
 
         // Provide your own implementation to lookup users based on the principal attribute in the

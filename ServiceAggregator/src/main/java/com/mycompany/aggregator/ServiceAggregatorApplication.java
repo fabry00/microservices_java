@@ -3,7 +3,6 @@ package com.mycompany.aggregator;
 import com.google.common.collect.ImmutableSet;
 import com.mycompany.processservice.api.ProcessServiceAPI;
 import com.mycompany.accountservice.api.AccountServiceAPI;
-import com.mycompany.aggregator.api.systemstatus.SubSystemStatusInfo;
 import com.mycompany.aggregator.health.HealthCheckTask;
 import com.mycompany.aggregator.resources.SystemStatusResource;
 import com.mycompany.commons.api.IAPI;
@@ -14,8 +13,6 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class ServiceAggregatorApplication extends Application<ServiceAggregatorConfiguration> {

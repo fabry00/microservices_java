@@ -21,11 +21,15 @@ import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.mycompany.accountservice.auth.MyAuthenticator;
+import com.mycompany.accountservice.dao.IDAOFactory;
+import com.mycompany.accountservice.dao.impl.inmemory.MemoryDaoFactory;
 
 import java.security.Principal;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 public class AccountServiceApplication extends Application<AccountServiceConfiguration> {
+
+    private IDAOFactory daoFactory;
 
     public static void main(final String[] args) throws Exception {
         new AccountServiceApplication().run(args);
@@ -38,12 +42,15 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
 
     @Override
     public void initialize(final Bootstrap<AccountServiceConfiguration> bootstrap) {
-        // TODO: application initialization
+        daoFactory = new MemoryDaoFactory();
+
     }
 
     @Override
     public void run(final AccountServiceConfiguration configuration,
             final Environment environment) throws URISyntaxException, UnsupportedEncodingException {
+
+        daoFactory.setConnectionProperties(configuration.getConnectionPArams());
 
         environment.healthChecks().register(AccountServiceConfiguration.SERVICE_NAME,
                 getHealthCheck(configuration, environment));
@@ -55,7 +62,8 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new SecuredResource(
                 configuration.getJwtTokenSecret(),
-                configuration.getTokenExpiration()));
+                configuration.getTokenExpiration(),
+                daoFactory));
     }
 
     private AuthDynamicFeature getAuthenticator(byte[] tokenSecret) {
