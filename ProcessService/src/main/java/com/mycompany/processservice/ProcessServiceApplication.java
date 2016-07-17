@@ -10,6 +10,7 @@ import io.dropwizard.setup.Environment;
 import java.net.URI;
 import java.net.URISyntaxException;
 import com.mycompany.processservice.api.ProcessServiceAPI;
+import com.mycompany.processservice.resources.TaskResource;
 
 public class ProcessServiceApplication extends Application<ProcessServiceConfiguration> {
 
@@ -19,7 +20,7 @@ public class ProcessServiceApplication extends Application<ProcessServiceConfigu
 
     @Override
     public String getName() {
-        return "ProcessService";
+        return ProcessServiceConfiguration.SERVICE_DESC;
     }
 
     @Override
@@ -34,6 +35,7 @@ public class ProcessServiceApplication extends Application<ProcessServiceConfigu
         environment.healthChecks().register(ProcessServiceConfiguration.SERVICE_NAME,
                                     getHealthCheck(configuration,environment));
         environment.jersey().register(getDefault());
+        environment.jersey().register(getTaskResource());
 
     }
 
@@ -44,6 +46,13 @@ public class ProcessServiceApplication extends Application<ProcessServiceConfigu
                 .build();
 
         return defaultRes;
+    }
+    
+    private TaskResource getTaskResource() {
+        TaskResource resource
+                = new TaskResource(ProcessServiceConfiguration.MAX_TASK_LENGTH);
+
+        return resource;
     }
     
     private HealthCheckTask getHealthCheck(final ProcessServiceConfiguration configuration,

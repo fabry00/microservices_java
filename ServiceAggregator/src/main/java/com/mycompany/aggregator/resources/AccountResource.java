@@ -2,6 +2,7 @@ package com.mycompany.aggregator.resources;
 
 import com.mycompany.accountservice.api.AccountServiceAPI;
 import com.mycompany.accountservice.api.Token;
+import com.mycompany.aggregator.ServiceAggregatorConfiguration;
 import com.mycompany.commons.api.SystemUnreachable;
 import java.security.Principal;
 import javax.ws.rs.GET;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Path("/api/"+ServiceAggregatorConfiguration.API_V)
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
 

@@ -1,17 +1,21 @@
 package com.mycompany.aggregator.resources;
 
+import com.google.common.base.Optional;
+import com.mycompany.aggregator.ServiceAggregatorConfiguration;
 import com.mycompany.commons.api.SystemUnreachable;
 import com.mycompany.processservice.api.ProcessServiceAPI;
 import com.mycompany.processservice.api.Task;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Path("/api/"+ServiceAggregatorConfiguration.API_V)
 @Produces(MediaType.APPLICATION_JSON)
 public class ProcessReource {
 
@@ -25,11 +29,13 @@ public class ProcessReource {
 
     @GET
     @Path("/" + ProcessServiceAPI.TASK_LIST)
+    /*@QueryParam("contains") Optional<String> contains*/
     public Task[] getTaskList() {
         log.info("getTaskList");
 
         try {
-            return processAPI.getTasks();
+            Optional<String> op = Optional.of("");
+            return processAPI.getTasks(op);
 
         } catch (SystemUnreachable ex) {
             log.error("Service unreachable");

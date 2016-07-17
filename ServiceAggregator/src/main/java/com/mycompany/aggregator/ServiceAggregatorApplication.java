@@ -50,6 +50,7 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
         environment.jersey().register(getSystemStatus());
         environment.jersey().register(getAccountResource());
         environment.jersey().register(getProcessResource());
+        
 
     }
 
@@ -73,6 +74,8 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     private SystemStatusResource getSystemStatus() {
         SystemStatusResource systemStatus = new SystemStatusResource.Builder()
                 .withApis(apis)
+                .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
+                .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
                 .build();
         return systemStatus;
     }
