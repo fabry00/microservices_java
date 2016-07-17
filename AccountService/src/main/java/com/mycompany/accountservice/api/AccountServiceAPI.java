@@ -2,8 +2,6 @@ package com.mycompany.accountservice.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.commons.api.BaseServiceAPI;
-import com.mycompany.commons.api.IServiceInfo;
-import com.mycompany.commons.api.ServiceInfo;
 import com.mycompany.commons.api.SystemUnreachable;
 import com.mycompany.commons.headers.Header;
 import java.io.IOException;

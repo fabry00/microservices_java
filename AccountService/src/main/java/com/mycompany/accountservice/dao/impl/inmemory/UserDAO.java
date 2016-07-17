@@ -38,9 +38,10 @@ public class UserDAO implements IUserDAO {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
     public MyUser getUser(String email, String password) throws DaoException{
-
-        return null;
+        return db.getUser(email, password);
+        
     }
 
 }
