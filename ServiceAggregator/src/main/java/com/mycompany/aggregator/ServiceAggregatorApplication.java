@@ -3,9 +3,12 @@ package com.mycompany.aggregator;
 import com.google.common.collect.ImmutableSet;
 import com.mycompany.processservice.api.ProcessServiceAPI;
 import com.mycompany.accountservice.api.AccountServiceAPI;
+import com.mycompany.accountservice.api.MyUser;
+import com.mycompany.accountservice.api.Token;
 import com.mycompany.aggregator.health.HealthCheckTask;
 import com.mycompany.aggregator.resources.SystemStatusResource;
 import com.mycompany.commons.api.IAPI;
+import com.mycompany.commons.api.SystemUnreachable;
 import com.mycompany.commons.resource.DefaultResource;
 import com.mycompany.commons.resource.IDefaultResource;
 import io.dropwizard.Application;
@@ -14,11 +17,13 @@ import io.dropwizard.setup.Environment;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServiceAggregatorApplication extends Application<ServiceAggregatorConfiguration> {
 
     private Set<IAPI> apis;
-    
+
     public static void main(final String[] args) throws Exception {
         new ServiceAggregatorApplication().run(args);
     }
@@ -35,24 +40,28 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
     @Override
     public void run(final ServiceAggregatorConfiguration configuration,
-                    final Environment environment) throws URISyntaxException {
-        
+            final Environment environment) throws URISyntaxException {
+
         buildApis();
-                
+
         environment.healthChecks().register(ServiceAggregatorConfiguration.SERVICE_NAME,
-                                    getHealthCheck());
-        
+                getHealthCheck());
+
         environment.jersey().register(getDefault());
         environment.jersey().register(getSystemStatus());
-        
-       /* AccountServiceAPI client = new AccountServiceAPI("localhost",9084);
-        IServiceInfo resp = client.getServiceInfo();
-        System.out.println("########### "+resp);*/
-        /*AccountServiceAPI client = new AccountServiceAPI("localhost",9080);
-        ServiceInfo resp = client.getServiceInfo();
-        System.out.println("########### "+resp);*/
+
+        try {
+            URI uri = new URI("http://localhost:9084");
+            AccountServiceAPI client = new AccountServiceAPI(uri);
+            Token token = client.getValidToken("user@test.it", "test");
+            System.out.println(token.getToken()+" "+token.getStatus());
+            MyUser user = client.checkToken(token.getToken());
+            System.out.println("User:"+user.getName());
+        } catch (SystemUnreachable ex) {
+            Logger.getLogger(ServiceAggregatorApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
+
     private IDefaultResource getDefault() {
         IDefaultResource defaultRes = new DefaultResource.Builder()
                 .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
@@ -61,8 +70,7 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
         return defaultRes;
     }
-    
-    
+
     private SystemStatusResource getSystemStatus() {
         SystemStatusResource systemStatus = new SystemStatusResource.Builder()
                 .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
@@ -71,26 +79,25 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
                 .build();
         return systemStatus;
     }
-    
-    private HealthCheckTask getHealthCheck(){
-        
+
+    private HealthCheckTask getHealthCheck() {
+
         HealthCheckTask checker = new HealthCheckTask(apis);
         return checker;
     }
-    
-    
+
     private void buildApis() throws URISyntaxException {
-        
+
         ImmutableSet.Builder<IAPI> builder
                 = new ImmutableSet.Builder<>();
-        
+
         // FIXME retreive data from configurations
         URI uri = new URI("http://localhost:9084");
         builder.add(new AccountServiceAPI(uri));
-        
+
         uri = new URI("http://localhost:9082");
         builder.add(new ProcessServiceAPI(uri));
-        
+
         apis = builder.build();
     }
 

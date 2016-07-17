@@ -43,5 +43,11 @@ public class UserDAO implements IUserDAO {
         return db.getUser(email, password);
         
     }
+    
+    @Override
+    public MyUser getUser(String email) throws DaoException{
+        return db.getUser(email);
+        
+    }
 
 }

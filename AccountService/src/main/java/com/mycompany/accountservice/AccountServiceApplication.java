@@ -50,7 +50,7 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
     public void run(final AccountServiceConfiguration configuration,
             final Environment environment) throws URISyntaxException, UnsupportedEncodingException {
 
-        daoFactory.setConnectionProperties(configuration.getConnectionPArams());
+        daoFactory.setConnectionProperties(configuration.getConnectionParams());
 
         environment.healthChecks().register(AccountServiceConfiguration.SERVICE_NAME,
                 getHealthCheck(configuration, environment));
@@ -62,21 +62,21 @@ public class AccountServiceApplication extends Application<AccountServiceConfigu
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new SecuredResource(
                 configuration.getJwtTokenSecret(),
-                configuration.getTokenExpiration(),
+                AccountServiceConfiguration.TOKEN_EXPIRATION,
                 daoFactory));
     }
 
     private AuthDynamicFeature getAuthenticator(byte[] tokenSecret) {
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
         final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(tokenSecret);
+        
         AuthDynamicFeature auth = new AuthDynamicFeature(
                 new JWTAuthFilter.Builder<MyUser>()
                 .setTokenParser(tokenParser)
                 .setTokenVerifier(tokenVerifier)
-                .setRealm("realm")
+                .setRealm(AccountServiceConfiguration.REALM)
                 .setPrefix("Bearer")
-                .setAuthenticator(new MyAuthenticator() {
-                })
+                .setAuthenticator(new MyAuthenticator(daoFactory) {})                        
                 .buildAuthFilter());
 
         return auth;

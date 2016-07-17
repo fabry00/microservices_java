@@ -4,18 +4,12 @@ import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
-import com.google.common.base.Throwables;
 import com.mycompany.accountservice.api.MyUser;
 import com.mycompany.accountservice.api.Token;
 import com.mycompany.accountservice.dao.IDAOFactory;
-import com.mycompany.accountservice.dao.IUserDAO;
 import com.mycompany.accountservice.dao.helper.DAOHelper;
 import com.mycompany.accountservice.resources.helpers.JwtHelper;
 import io.dropwizard.auth.Auth;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.keys.HmacKey;
-import org.jose4j.lang.JoseException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,11 +22,14 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/jwt")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 public class SecuredResource {
+    private final Logger log = LoggerFactory.getLogger(SecuredResource.class);
 
     private final Integer expiration;
     private final IDAOFactory daoFactory;
@@ -99,6 +96,7 @@ public class SecuredResource {
     @GET
     @Path("/check-token")
     public MyUser checkToken(@Auth Principal user) {
+        log.info("checkToken user: "+user);
         if (null == user) {
             throw new WebApplicationException("Credential params not found",
                     Response.Status.NOT_FOUND);

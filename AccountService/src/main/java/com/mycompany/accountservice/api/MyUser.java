@@ -6,9 +6,12 @@ import java.util.Objects;
 
 public class MyUser implements Principal {
 
-    private final BigDecimal id;
-    private final String name;
+    private  BigDecimal id;
+    private  String name;
 
+    public MyUser() {
+    }
+    
     public MyUser(BigDecimal id, String name) {
         this.id = id;
         this.name = name;
@@ -21,6 +24,14 @@ public class MyUser implements Principal {
     @Override
     public String getName() {
         return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setId(BigDecimal id) {
+        this.id = id;
     }
 
     @Override

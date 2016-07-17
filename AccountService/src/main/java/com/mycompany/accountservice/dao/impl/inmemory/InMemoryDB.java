@@ -36,6 +36,20 @@ public class InMemoryDB {
         }
         throw  new IDAO.DaoException();
     }
+    
+    public MyUser getUser(String email)  throws IDAO.DaoException{
+        for(Entry<BigDecimal,MyUserDB> user : userCache.entrySet()) {
+            if(user.getValue().getName().equals(email) ){
+                
+                return new MyUser.Builder()
+                        .withID(user.getValue().getId())
+                        .withName(user.getValue().getName())
+                        .build();
+                        
+            }
+        }
+        throw  new IDAO.DaoException();
+    }
 
     private void addDefaultConnectionProperties() {
         if(!connectionProperties.containsKey(PARAMS.MAX_ELEMENTS.toString())) {
