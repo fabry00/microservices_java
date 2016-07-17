@@ -1,5 +1,6 @@
 import { bootstrap } from '@angular/platform-browser-dynamic';
 import { enableProdMode } from '@angular/core';
+import { HTTP_PROVIDERS } from '@angular/http';
 import { WebappAppComponent, environment } from './app/';
 
 import { Logger, Options, Level } from "angular2-logger/core";
@@ -11,6 +12,7 @@ if (environment.production) {
 }
 
 bootstrap(WebappAppComponent, [ 
+  HTTP_PROVIDERS,
   { provide :Options, useValue: <Options>{ level: level }   },
   Logger,
 ]);
