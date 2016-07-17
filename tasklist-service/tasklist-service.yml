@@ -1,4 +1,0 @@
-maxLength: 100
-serviceName: TaskList Service
-serviceDesc: Returnt the list server's tasks
-template: TEST
