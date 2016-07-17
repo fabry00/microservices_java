@@ -9,7 +9,6 @@ import com.mycompany.aggregator.api.systemstatus.SystemStatus;
 import com.mycompany.aggregator.api.systemstatus.SystemStatusInfo;
 import com.mycompany.commons.api.IAPI;
 import com.mycompany.commons.api.SystemUnreachable;
-import com.mycompany.commons.resource.DefaultResource;
 import java.util.Set;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,15 +22,10 @@ import org.slf4j.LoggerFactory;
 public class SystemStatusResource {
 
     private final Logger log = LoggerFactory.getLogger(SystemStatusResource.class);
-    private final String serviceName;
-    private final String serviceDesc;
-
+    
     private Set<IAPI> apis;
 
-    private SystemStatusResource(String serviceName,String servceDesc) {
-        
-        this.serviceName = serviceName;
-        this.serviceDesc = servceDesc;
+    private SystemStatusResource() {
     }
 
     public void setApis(Set<IAPI> apis) {
@@ -77,19 +71,8 @@ public class SystemStatusResource {
 
     public static class Builder {
 
-        private String name;
-        private String description;
         private Set<IAPI> apis;
 
-        public Builder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder withDesc(String desc) {
-            this.description = desc;
-            return this;
-        }
         public Builder withApis(Set<IAPI> apis) {
             this.apis = apis;
             return this;
@@ -97,7 +80,7 @@ public class SystemStatusResource {
 
         public SystemStatusResource build() {
             SystemStatusResource resource 
-                    = new SystemStatusResource(name, description);
+                    = new SystemStatusResource();
             resource.setApis(apis);
             return resource;
         }

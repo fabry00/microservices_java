@@ -3,12 +3,11 @@ package com.mycompany.aggregator;
 import com.google.common.collect.ImmutableSet;
 import com.mycompany.processservice.api.ProcessServiceAPI;
 import com.mycompany.accountservice.api.AccountServiceAPI;
-import com.mycompany.accountservice.api.MyUser;
-import com.mycompany.accountservice.api.Token;
 import com.mycompany.aggregator.health.HealthCheckTask;
+import com.mycompany.aggregator.resources.AccountResource;
+import com.mycompany.aggregator.resources.ProcessReource;
 import com.mycompany.aggregator.resources.SystemStatusResource;
 import com.mycompany.commons.api.IAPI;
-import com.mycompany.commons.api.SystemUnreachable;
 import com.mycompany.commons.resource.DefaultResource;
 import com.mycompany.commons.resource.IDefaultResource;
 import io.dropwizard.Application;
@@ -17,12 +16,12 @@ import io.dropwizard.setup.Environment;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ServiceAggregatorApplication extends Application<ServiceAggregatorConfiguration> {
 
     private Set<IAPI> apis;
+    private AccountServiceAPI accountApi;
+    private ProcessServiceAPI processApi;
 
     public static void main(final String[] args) throws Exception {
         new ServiceAggregatorApplication().run(args);
@@ -49,17 +48,9 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
         environment.jersey().register(getDefault());
         environment.jersey().register(getSystemStatus());
+        environment.jersey().register(getAccountResource());
+        environment.jersey().register(getProcessResource());
 
-        try {
-            URI uri = new URI("http://localhost:9084");
-            AccountServiceAPI client = new AccountServiceAPI(uri);
-            Token token = client.getValidToken("user@test.it", "test");
-            System.out.println(token.getToken()+" "+token.getStatus());
-            MyUser user = client.checkToken(token.getToken());
-            System.out.println("User:"+user.getName());
-        } catch (SystemUnreachable ex) {
-            Logger.getLogger(ServiceAggregatorApplication.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private IDefaultResource getDefault() {
@@ -70,11 +61,17 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
         return defaultRes;
     }
+    
+    private AccountResource getAccountResource() {
+        return new AccountResource.Builder().withAccountApi(accountApi).build();
+    }
+    
+    private ProcessReource getProcessResource() {
+        return new ProcessReource.Builder().withAccountApi(processApi).build();
+    }
 
     private SystemStatusResource getSystemStatus() {
         SystemStatusResource systemStatus = new SystemStatusResource.Builder()
-                .withName(ServiceAggregatorConfiguration.SERVICE_NAME)
-                .withDesc(ServiceAggregatorConfiguration.SERVICE_DESC)
                 .withApis(apis)
                 .build();
         return systemStatus;
@@ -93,10 +90,12 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
         // FIXME retreive data from configurations
         URI uri = new URI("http://localhost:9084");
-        builder.add(new AccountServiceAPI(uri));
+        accountApi = new AccountServiceAPI(uri);
+        builder.add(accountApi);
 
         uri = new URI("http://localhost:9082");
-        builder.add(new ProcessServiceAPI(uri));
+        processApi = new ProcessServiceAPI(uri);
+        builder.add(processApi);
 
         apis = builder.build();
     }

@@ -27,8 +27,6 @@ public class AccountServiceAPI extends BaseServiceAPI{
     
     public MyUser checkToken(String token) throws SystemUnreachable{
         try {
-           
-            
             HttpGet request = new HttpGet(getUri()+JWT+CHECK_TOKEN);
             request.setHeader(Header.CONTENT_TYPE, MediaType.APPLICATION_JSON);
             request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
