@@ -1,16 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 SITE=""
 if [ -z "$1" ]
   then
-    echo "No argument supplied. ARG0=y to site or n only to pull and compile"
+    echo "No argument supplied. ARG0=y to perform mvn site or n only to pull and mvn install"
 	exit
   else
     SITE=$1
 fi
 
 echo "-------------------------------------"
-echo " UPDATEING FORM REPOSITORY"
+echo " UPDATING FORM REPOSITORY"
 git pull
 
 echo "-------------------------------------"
@@ -24,9 +24,11 @@ if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
 	echo "SITE COMMONS"
-	  mvn site
+	  mvn site -Ddependency.locations.enabled=false
 fi
 
+echo "-------------------------------------"
+read -p "Press any key to continue... " -n1 -s
 
 echo "-------------------------------------"
 echo "-------------------------------------"
@@ -37,7 +39,7 @@ if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
 	echo "SITE ProcessService"
-	  mvn site
+	  mvn site -Ddependency.locations.enabled=false
 fi
 
 echo "-------------------------------------"
@@ -52,7 +54,7 @@ if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
 	echo "SITE AccountService"
-	  mvn site
+	  mvn site -Ddependency.locations.enabled=false
 fi
 
 echo "-------------------------------------"
@@ -67,7 +69,7 @@ if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
 	echo "SITE ServiceAggregator"
-	  mvn site
+	  mvn site -Ddependency.locations.enabled=false
 fi
 
 echo "-------------------------------------"
