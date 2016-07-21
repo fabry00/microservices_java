@@ -8,10 +8,17 @@ if [ -z "$1" ]
   else
     SITE=$1
 fi
+echo "-------------------------------------"
+read -p "WARNING all the changes will be reverted " -n1 -s
+
+git checkout .
 
 echo "-------------------------------------"
 echo " UPDATING FORM REPOSITORY"
 git pull
+
+echo "-------------------------------------"
+read -p "Press any key to continue... " -n1 -s
 
 echo "-------------------------------------"
 echo "-------------------------------------"
@@ -74,4 +81,6 @@ fi
 
 echo "-------------------------------------"
 echo "-------------------------------------"
+cd ../
+chmod a+x *.sh
 echo "END"
