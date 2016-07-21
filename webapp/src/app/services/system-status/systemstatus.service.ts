@@ -17,6 +17,7 @@ export class SystemstatusService {
 
   getStatus(): Promise<Status> {
     this._logger.debug('getStatus start');
+    
     /**
      * We're still returning a Promise but we're creating it differently.
      * The Angular http.get returns an RxJS Observable. Observables are a powerful 
