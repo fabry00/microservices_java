@@ -19,7 +19,7 @@ echo "-------------------------------------"
 echo "-------------------------------------"
 echo "COMPILING COMMONS"
 cd Commons 
-mvn package && mvn install
+mvn install
 if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
@@ -27,11 +27,12 @@ if [ $SITE == "y" ]
 	  mvn site
 fi
 
+
 echo "-------------------------------------"
 echo "-------------------------------------"
 echo "COMPILING ProcessService"
 cd ../ProcessService 
-mvn package && mvn install
+mvn install
 if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
@@ -40,10 +41,13 @@ if [ $SITE == "y" ]
 fi
 
 echo "-------------------------------------"
+read -p "Press any key to continue... " -n1 -s
+
+echo "-------------------------------------"
 echo "-------------------------------------"
 echo "COMPILING AccountService"
 cd ../AccountService 
-mvn package && mvn install
+mvn install
 if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
@@ -52,13 +56,20 @@ if [ $SITE == "y" ]
 fi
 
 echo "-------------------------------------"
+read -p "Press any key to continue... " -n1 -s
+
+echo "-------------------------------------"
 echo "-------------------------------------"
 echo "COMPILING ServiceAggregator"
 cd ../ServiceAggregator 
-mvn package && mvn install
+mvn install
 if [ $SITE == "y" ]
     then
 	echo "-------------------------------------"
 	echo "SITE ServiceAggregator"
 	  mvn site
 fi
+
+echo "-------------------------------------"
+echo "-------------------------------------"
+echo "END"
