@@ -15,15 +15,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.MediaType;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/api/"+ServiceAggregatorConfiguration.API_V)
+@Path("/api/" + ServiceAggregatorConfiguration.API_V)
 @Produces(MediaType.APPLICATION_JSON)
 public class SystemStatusResource {
 
     private final Logger log = LoggerFactory.getLogger(SystemStatusResource.class);
-    
+
     private Set<IAPI> apis;
     private final String serviceName;
     private final String serviceDesc;
@@ -42,8 +43,9 @@ public class SystemStatusResource {
     @GET
     @Timed
     @Path("/system-status")
-    public IServiceInfo serviceInfo() {
+    public JSONObject serviceInfo() {
 
+        JSONObject jo = new JSONObject();
         ISystemStatusInfo systemStatusInfo = new SystemStatusInfo();
         systemStatusInfo.setName(this.serviceName);
         systemStatusInfo.setDescription(this.serviceDesc);
@@ -75,8 +77,8 @@ public class SystemStatusResource {
 
             systemStatusInfo.addSubSystemStatus(subSystemInfo);
         }
-
-        return systemStatusInfo;
+        jo.put("data", systemStatusInfo);
+        return jo;
     }
 
     public static class Builder {
@@ -85,32 +87,32 @@ public class SystemStatusResource {
         private String name;
         private String desc;
         private String apiV;
-        
+
         public Builder withApis(Set<IAPI> apis) {
             this.apis = apis;
             return this;
         }
-        
+
         public Builder withName(String name) {
             this.name = name;
             return this;
         }
-        
+
         public Builder withDesc(String desc) {
             this.desc = desc;
             return this;
         }
-        
+
         public Builder withApiVersion(String apiVersion) {
             this.apiV = apiVersion;
             return this;
         }
 
         public SystemStatusResource build() {
-            SystemStatusResource resource 
+            SystemStatusResource resource
                     = new SystemStatusResource(this.name,
-                                               this.desc,
-                    this.apiV);
+                            this.desc,
+                            this.apiV);
             resource.setApis(apis);
             return resource;
         }

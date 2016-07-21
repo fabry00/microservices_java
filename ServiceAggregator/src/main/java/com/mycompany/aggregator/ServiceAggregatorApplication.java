@@ -15,7 +15,11 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.EnumSet;
 import java.util.Set;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 public class ServiceAggregatorApplication extends Application<ServiceAggregatorConfiguration> {
 
@@ -41,6 +45,7 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
     public void run(final ServiceAggregatorConfiguration configuration,
             final Environment environment) throws URISyntaxException {
 
+        enableCors(environment);
         buildApis();
 
         environment.healthChecks().register(ServiceAggregatorConfiguration.SERVICE_NAME,
@@ -50,7 +55,6 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
         environment.jersey().register(getSystemStatus());
         environment.jersey().register(getAccountResource());
         environment.jersey().register(getProcessResource());
-        
 
     }
 
@@ -62,11 +66,11 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
 
         return defaultRes;
     }
-    
+
     private AccountResource getAccountResource() {
         return new AccountResource.Builder().withAccountApi(accountApi).build();
     }
-    
+
     private ProcessReource getProcessResource() {
         return new ProcessReource.Builder().withAccountApi(processApi).build();
     }
@@ -101,6 +105,20 @@ public class ServiceAggregatorApplication extends Application<ServiceAggregatorC
         builder.add(processApi);
 
         apis = builder.build();
+    }
+
+    private void enableCors(Environment environment) {
+        // Enable CORS headers
+        final FilterRegistration.Dynamic cors
+                = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+
+        // Configure CORS parameters
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+        // Add URL mapping
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
     }
 
 }

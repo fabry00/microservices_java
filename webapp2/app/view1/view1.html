@@ -1,0 +1,28 @@
+<div class="alert alert-danger" role="alert" ng-if="error">{{error}}</div>
+<div class="jumbotron">
+    <h3>System Info</h3>
+    <div class="well">
+       <h4> Global Status</h4>
+        <div class="row">
+            <div class="col-md-3"> Name: {{status.name}}</div>
+            <div class="col-md-3">
+                Status: <span <span ng-class="status.status == 'UNHEALTHY'? 'label label-danger' : 'label label-success'" >{{status.status}}</span>
+            </div>
+            <div class="col-md-5">Description: {{status.description}}</div>
+        </div>
+        <hr/>
+        <h4> Sub system Status</h4>
+        <div>
+            <div ng-repeat="subsystem in status.subSystemsInfo" class="row">
+                <div class="col-md-3">Name: {{subsystem.name}}</div>
+                <div class="col-md-3">
+                    SubSystem Status: <span ng-class="subsystem.status == 'UNHEALTHY'? 'label label-danger' : 'label label-success'" >{{subsystem.status}}</span>
+                </div>
+                <div class="col-md-5">Description: {{subsystem.description}}</div>
+
+            </div>
+        </div>
+    </div>
+    <p><a class="btn btn-primary btn" ng-click="checkStatus()"role="button">Check again</a></p>
+</div>
+</div>

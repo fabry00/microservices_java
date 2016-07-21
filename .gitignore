@@ -71,3 +71,4 @@ hs_err_pid*
 /ServiceAggregator/target/
 /Commons/target/
 PIDs
+/webapp2/nbproject/private/
